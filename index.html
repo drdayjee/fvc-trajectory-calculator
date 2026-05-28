@@ -1,156 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Early FVC trajectory probability calculator for interstitial lung disease research. Estimates the probability of four FVC decline trajectory groups from baseline and follow-up FVC % predicted." />
-  <title>Early FVC Trajectory Probability Calculator</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <a class="skip-link" href="#calculator">Skip to calculator</a>
+Skip to calculator
+Early FVC Trajectory Probability Calculator
+Estimates the probability of belonging to one of four early FVC decline trajectory groups in interstitial lung disease, based on baseline FVC % predicted and a follow-up measurement.
+Patient inputs
+Baseline FVC (% predicted)
+Initial measurement. Decimals allowed.
 
-  <header class="site-header">
-    <div class="container">
-      <h1>Early FVC Trajectory Probability Calculator</h1>
-      <p class="subtitle">FVC-only model for early trajectory group probability in interstitial lung disease</p>
-    </div>
-  </header>
+Follow-up FVC (% predicted)
+Repeat measurement at 3 or 6 months.
 
-  <main class="container" id="calculator">
-    <section class="card" aria-labelledby="inputs-heading">
-      <h2 id="inputs-heading">Inputs</h2>
+Interval (months)
+              — Select —
+              3 months
+              6 months
+            
+Time between the two measurements.
 
-      <form id="calc-form" novalidate>
-        <div class="field">
-          <label for="fvc0">Baseline FVC (% predicted)</label>
-          <p class="hint" id="fvc0-hint">Baseline forced vital capacity, percent predicted. Decimals allowed.</p>
-          <input
-            type="number"
-            id="fvc0"
-            name="fvc0"
-            inputmode="decimal"
-            step="any"
-            placeholder="e.g., 82"
-            aria-describedby="fvc0-hint fvc0-error"
-            autocomplete="off"
-          />
-          <p class="error" id="fvc0-error" role="alert" aria-live="polite"></p>
-        </div>
-
-        <div class="field">
-          <label for="fvct">Follow-up FVC (% predicted)</label>
-          <p class="hint" id="fvct-hint">Follow-up forced vital capacity, percent predicted. Decimals allowed.</p>
-          <input
-            type="number"
-            id="fvct"
-            name="fvct"
-            inputmode="decimal"
-            step="any"
-            placeholder="e.g., 74"
-            aria-describedby="fvct-hint fvct-error"
-            autocomplete="off"
-          />
-          <p class="error" id="fvct-error" role="alert" aria-live="polite"></p>
-        </div>
-
-        <div class="field">
-          <label for="months">Interval (months)</label>
-          <p class="hint" id="months-hint">Time between baseline and follow-up. Must be exactly 3 or 6.</p>
-          <select id="months" name="months" aria-describedby="months-hint months-error">
-            <option value="">— Select —</option>
-            <option value="3">3 months</option>
-            <option value="6">6 months</option>
-          </select>
-          <p class="error" id="months-error" role="alert" aria-live="polite"></p>
-        </div>
-
-        <div class="actions">
-          <button type="submit" id="calc-btn" class="btn btn-primary">Calculate</button>
-          <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
-        </div>
-      </form>
-    </section>
-
-    <section class="card results" id="results" aria-labelledby="results-heading" aria-live="polite">
-      <h2 id="results-heading">Results</h2>
-
-      <div class="results-grid">
-        <div class="result-row">
-          <span class="result-label">Baseline FVC</span>
-          <span class="result-value" id="out-fvc0">—</span>
-        </div>
-        <div class="result-row">
-          <span class="result-label">Follow-up FVC</span>
-          <span class="result-value" id="out-fvct">—</span>
-        </div>
-        <div class="result-row">
-          <span class="result-label">Interval</span>
-          <span class="result-value" id="out-months">—</span>
-        </div>
-        <div class="result-row highlight">
-          <span class="result-label">ΔFVC (follow-up − baseline)</span>
-          <span class="result-value" id="out-delta">—</span>
-        </div>
-      </div>
-
-      <h3>Trajectory probabilities</h3>
-      <div class="prob-table" role="table" aria-label="Trajectory probabilities">
-        <div class="prob-header" role="row">
-          <span role="columnheader">Trajectory</span>
-          <span role="columnheader">Probability</span>
-          <span role="columnheader">Percent</span>
-        </div>
-        <div class="prob-row" role="row" id="row-t1">
-          <span role="cell">Trajectory 1</span>
-          <span role="cell" id="p1-dec">—</span>
-          <span role="cell" id="p1-pct">—</span>
-        </div>
-        <div class="prob-row" role="row" id="row-t2">
-          <span role="cell">Trajectory 2</span>
-          <span role="cell" id="p2-dec">—</span>
-          <span role="cell" id="p2-pct">—</span>
-        </div>
-        <div class="prob-row" role="row" id="row-t3">
-          <span role="cell">Trajectory 3</span>
-          <span role="cell" id="p3-dec">—</span>
-          <span role="cell" id="p3-pct">—</span>
-        </div>
-        <div class="prob-row" role="row" id="row-t4">
-          <span role="cell">Trajectory 4</span>
-          <span role="cell" id="p4-dec">—</span>
-          <span role="cell" id="p4-pct">—</span>
-        </div>
-      </div>
-
-      <div class="verdict">
-        <div class="verdict-block">
-          <span class="verdict-label">Predicted trajectory group</span>
-          <span class="verdict-value" id="out-traj">—</span>
-        </div>
-        <div class="verdict-block">
-          <span class="verdict-label">Confidence label</span>
-          <span class="verdict-value" id="out-conf">—</span>
-        </div>
-      </div>
-
-      <p class="note">
-        This tool is an early FVC trajectory probability calculator based on a multinomial logistic model that uses
-        baseline FVC % predicted, change in FVC % predicted, and a 6-month indicator. Probabilities are computed with
-        a numerically stable softmax against a reference category.
-      </p>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>
-        For informational and research use only. This calculator does not provide a clinical diagnosis and does not
-        replace clinical judgment, multidisciplinary discussion, or formal evaluation by a qualified clinician.
-      </p>
-    </div>
-  </footer>
-
-  <script src="script.js" defer></script>
-</body>
-</html>
+Calculate Reset
+Results
+Enter values and select Calculate to view trajectory probabilities.
+The predicted group corresponds to the trajectory with the highest posterior probability. Confidence is labelled High-confidence when the top probability is ≥ 0.70, Probable when 0.50–0.69, and Indeterminate below 0.50.
+For research and educational use. This tool supports interpretation of early FVC trajectory and is not a substitute for clinical judgment, multidisciplinary review, or evaluation by a qualified clinician.
